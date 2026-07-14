@@ -1,32 +1,55 @@
-# React + TypeScript + Vite
+# MediCare Connect Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A healthcare client portal template where patients can view medical reports, prescriptions, appointments, invoices, and support requests. Staff can manage appointments, billing, and support tickets across patients.
 
-Currently, two official plugins are available:
+**Template project — all data is mock/dummy.** No real backend, no real auth, no real PHI. See [PRD.md](PRD.md) and [DESIGN_SPEC.md](DESIGN_SPEC.md) for full product and design specs.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech stack
 
-## React Compiler
+- React + Vite + TypeScript
+- Tailwind CSS v4 + Shadcn/ui (Radix UI primitives)
+- Framer Motion for animation
+- React Router for routing
+- Static mock data (`src/data/`) + React context (no real backend)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the Oxlint configuration
+- **Mock auth** — demo login as Patient or Staff (any password works)
+- **Dashboard** — role-aware summary (next appointment, reports, invoices, tickets)
+- **Medical Reports** — timeline list + detail slider with findings, lab values, attachments
+- **Prescriptions** — active/past medications + detail slider with refill, side effects, pharmacy info
+- **Appointments** — calendar view + booking flow (patient), clinic-wide schedule (staff)
+- **Billing** — invoice list + detail slider with line items, insurance breakdown, mock payment
+- **Support** — ticket list + detail slider with threaded chat, priority, staff assignment
+- **Light/dark theme**, command palette (⌘K), animated gradient backgrounds and illustrations throughout
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Getting started
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Then open the printed local URL and sign in with one of the demo accounts shown on the login screen (`patient@demo.com` or `staff@demo.com`, any password).
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run Oxlint |
+
+## Project structure
+
+```
+src/
+  assets/illustrations/   Illustration SVGs (per-screen + backgrounds)
+  components/             Shared components (shell, ui primitives, etc.)
+  context/                Auth, mock data, and theme providers
+  data/                   Static mock fixtures (patients, reports, invoices, tickets, ...)
+  pages/                  Route-level page components
+  types/                  Shared TypeScript types
+  routes.tsx              App route definitions
+```
