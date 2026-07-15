@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useTheme } from "next-themes"
 import {
   LayoutDashboard,
@@ -15,11 +15,6 @@ import {
   LogOut,
 } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
@@ -35,18 +30,22 @@ export function NavRail({ onOpenPalette }: { onOpenPalette: () => void }) {
   const { user, logout } = useAuth()
   const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
-  const [hovered, setHovered] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState<string | null>(null)
 
   if (!user) return null
 
   const items = NAV_ITEMS.filter((item) => !item.patientOnly || user.role === "patient")
   const roleColor = user.role === "patient" ? "var(--role-patient)" : "var(--role-staff)"
 
+  function toggle(id: string) {
+    setExpanded((current) => (current === id ? null : id))
+  }
+
   return (
     <>
-      {/* Desktop: floating vertical rail */}
+      {/* Desktop: fixed horizontal dock, same position on every module */}
       <nav
-        className="fixed top-1/2 left-4 z-40 hidden -translate-y-1/2 flex-col items-center gap-1 rounded-full border border-border/60 bg-card/70 p-2 shadow-xl backdrop-blur-xl md:flex"
+        className="fixed top-6 right-4 z-40 hidden items-center gap-1 rounded-full border border-border/60 bg-card/70 p-2 shadow-xl backdrop-blur-xl md:right-8 md:flex"
         aria-label="Primary navigation"
       >
         <RailButton
@@ -54,11 +53,10 @@ export function NavRail({ onOpenPalette }: { onOpenPalette: () => void }) {
           label="Search & jump (⌘K)"
           onClick={onOpenPalette}
           active={false}
-          hovered={hovered}
-          setHovered={setHovered}
-          id="palette"
+          expanded={expanded === "palette"}
+          onToggle={() => toggle("palette")}
         />
-        <div className="my-1 h-px w-6 bg-border" />
+        <div className="mx-1 h-6 w-px bg-border" />
 
         {items.map((item) => (
           <NavLink key={item.to} to={item.to} className="relative">
@@ -67,60 +65,47 @@ export function NavRail({ onOpenPalette }: { onOpenPalette: () => void }) {
                 icon={item.icon}
                 label={item.label}
                 active={isActive}
-                hovered={hovered}
-                setHovered={setHovered}
-                id={item.to}
+                expanded={isActive}
+                onToggle={() => setExpanded(null)}
               />
             )}
           </NavLink>
         ))}
 
-        <div className="my-1 h-px w-6 bg-border" />
+        <div className="mx-1 h-6 w-px bg-border" />
 
         <RailButton
           icon={theme === "dark" ? Sun : Moon}
           label={theme === "dark" ? "Light mode" : "Dark mode"}
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           active={false}
-          hovered={hovered}
-          setHovered={setHovered}
-          id="theme"
+          expanded={expanded === "theme"}
+          onToggle={() => toggle("theme")}
         />
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              onMouseEnter={() => setHovered("avatar")}
-              onMouseLeave={() => setHovered(null)}
-              className="mt-1 flex size-11 items-center justify-center rounded-full ring-2 ring-offset-2 ring-offset-card transition-transform hover:scale-105"
-              style={{ "--tw-ring-color": roleColor } as React.CSSProperties}
-            >
-              <span
-                className="flex size-9 items-center justify-center rounded-full text-xs font-semibold text-white"
-                style={{ background: roleColor }}
-              >
-                {user.avatarInitials}
-              </span>
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="right">
-            {user.name} · {user.role === "patient" ? "Patient" : "Staff"}
-          </TooltipContent>
-        </Tooltip>
+        <button
+          type="button"
+          className="ml-1 flex size-11 shrink-0 items-center justify-center rounded-full ring-2 ring-offset-2 ring-offset-card"
+          style={{ "--tw-ring-color": roleColor } as React.CSSProperties}
+        >
+          <span
+            className="flex size-9 items-center justify-center rounded-full text-xs font-semibold text-white"
+            style={{ background: roleColor }}
+          >
+            {user.avatarInitials}
+          </span>
+        </button>
 
-        <RailButton
-          icon={LogOut}
-          label="Sign out"
+        <button
+          type="button"
           onClick={() => {
             logout()
             navigate("/login")
           }}
-          active={false}
-          hovered={hovered}
-          setHovered={setHovered}
-          id="logout"
-        />
+          className="flex size-11 items-center justify-center rounded-full text-destructive transition-colors hover:bg-destructive/10"
+        >
+          <LogOut className="size-5" strokeWidth={2} />
+        </button>
       </nav>
 
       {/* Mobile: floating bottom dock */}
@@ -168,44 +153,52 @@ function RailButton({
   label,
   active,
   onClick,
-  hovered,
-  setHovered,
-  id,
+  expanded,
+  onToggle,
 }: {
   icon: typeof LayoutDashboard
   label: string
   active: boolean
   onClick?: () => void
-  hovered: string | null
-  setHovered: (id: string | null) => void
-  id: string
+  expanded: boolean
+  onToggle: () => void
 }) {
   return (
-    <Tooltip open={hovered === id}>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          onClick={onClick}
-          onMouseEnter={() => setHovered(id)}
-          onMouseLeave={() => setHovered(null)}
-          className={cn(
-            "relative flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground",
-            active && "text-primary-foreground"
-          )}
-        >
-          {active && (
-            <motion.span
-              layoutId="rail-active-pill"
-              className="absolute inset-0 rounded-full bg-primary shadow-md"
-              transition={{ type: "spring", stiffness: 400, damping: 32 }}
-            />
-          )}
-          <Icon className="relative z-10 size-5" strokeWidth={2} />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent side="right" sideOffset={8}>
-        {label}
-      </TooltipContent>
-    </Tooltip>
+    <button
+      type="button"
+      onClick={() => {
+        onToggle()
+        onClick?.()
+      }}
+      className={cn(
+        "relative flex h-11 items-center justify-center gap-2 rounded-full text-muted-foreground transition-colors hover:text-foreground",
+        expanded && "pr-3",
+        active && "text-primary-foreground"
+      )}
+    >
+      {active && (
+        <motion.span
+          layoutId="rail-active-pill"
+          className="absolute inset-0 rounded-full bg-primary shadow-md"
+          transition={{ type: "spring", stiffness: 400, damping: 32 }}
+        />
+      )}
+      <span className="relative z-10 flex size-11 shrink-0 items-center justify-center">
+        <Icon className="size-5" strokeWidth={2} />
+      </span>
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.span
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: "auto", opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="relative z-10 overflow-hidden text-sm font-medium whitespace-nowrap"
+          >
+            {label}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </button>
   )
 }
