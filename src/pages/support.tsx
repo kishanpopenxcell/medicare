@@ -88,40 +88,40 @@ export default function SupportPage() {
   }
 
   return (
-    <div className="xl:max-w-3xl">
+    <div className="xl:max-w-6xl">
       <PageHeader
         icon={LifeBuoy}
         title="Support"
         description={isStaff ? "Ticket queue across all patients." : "Your support requests."}
-        action={
-          !isStaff && (
-            <Button
-              onClick={() => {
-                setNewOpen(true)
-                setParams({})
-              }}
-            >
-              New ticket
-            </Button>
-          )
-        }
       />
 
-      <div className="mb-4 flex gap-2">
-        {(["all", "open", "in-progress", "resolved"] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={cn(
-              "rounded-full border px-3 py-1.5 text-sm font-medium capitalize transition-colors",
-              filter === f
-                ? "border-primary bg-primary/10 text-primary"
-                : "text-muted-foreground hover:border-foreground/20"
-            )}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
+          {(["all", "open", "in-progress", "resolved"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={cn(
+                "rounded-full border px-3 py-1.5 text-sm font-medium capitalize transition-colors",
+                filter === f
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:border-foreground/20"
+              )}
+            >
+              {f.replace("-", " ")}
+            </button>
+          ))}
+        </div>
+        {!isStaff && (
+          <Button
+            onClick={() => {
+              setNewOpen(true)
+              setParams({})
+            }}
           >
-            {f.replace("-", " ")}
-          </button>
-        ))}
+            New ticket
+          </Button>
+        )}
       </div>
 
       {sorted.length === 0 ? (

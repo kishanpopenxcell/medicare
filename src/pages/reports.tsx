@@ -56,7 +56,7 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="xl:max-w-3xl">
+    <div className="xl:max-w-6xl">
       <PageHeader
         icon={FileText}
         title="Medical Reports"

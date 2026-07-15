@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { PageHeader } from "@/components/shell/page-header"
 import { Calendar } from "@/components/ui/calendar"
 import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { StatusDot } from "@/components/status-dot"
 import { EmptyState } from "@/components/empty-state"
 import {
@@ -65,19 +66,20 @@ export default function AppointmentsPage() {
         icon={CalendarDays}
         title="Appointments"
         description={isStaff ? "Clinic-wide schedule across all patients." : "Your upcoming and past visits."}
-        action={
-          !isStaff && (
-            <Button
-              onClick={() => {
-                setBookingOpen(true)
-                setParams({})
-              }}
-            >
-              Book appointment
-            </Button>
-          )
-        }
       />
+
+      {!isStaff && (
+        <div className="mb-4 flex justify-end">
+          <Button
+            onClick={() => {
+              setBookingOpen(true)
+              setParams({})
+            }}
+          >
+            Book appointment
+          </Button>
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
         <div className="rounded-2xl border bg-card/50 p-3 shadow-sm">
@@ -165,16 +167,20 @@ export default function AppointmentsPage() {
       </div>
 
       <Sheet open={bookingOpen} onOpenChange={setBookingOpen}>
-        <SheetContent side="right" className="w-full sm:max-w-md">
+        <SheetContent side="right" className="flex w-full flex-col sm:max-w-md">
           <SheetHeader>
             <SheetTitle>Book an appointment</SheetTitle>
             <SheetDescription>Choose a department, doctor, and time.</SheetDescription>
           </SheetHeader>
-          <BookingFlow
-            departments={departments}
-            doctorsByDepartment={doctorsByDepartment}
-            onDone={() => setBookingOpen(false)}
-          />
+          <ScrollArea className="flex-1 px-4">
+            <div className="pb-4">
+              <BookingFlow
+                departments={departments}
+                doctorsByDepartment={doctorsByDepartment}
+                onDone={() => setBookingOpen(false)}
+              />
+            </div>
+          </ScrollArea>
         </SheetContent>
       </Sheet>
     </div>

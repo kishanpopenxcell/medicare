@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, useReducedMotion } from "framer-motion"
-import { HeartPulse, ArrowRight } from "lucide-react"
+import { HeartPulse, ArrowRight, Check } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import loginHero from "@/assets/illustrations/login-hero.svg"
 import { TypewriterText } from "@/components/typewriter-text"
+import { cn } from "@/lib/utils"
 
 const DEMO_ACCOUNTS = [
   { label: "Patient demo", email: "patient@demo.com" },
@@ -16,8 +17,8 @@ const DEMO_ACCOUNTS = [
 ]
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState(DEMO_ACCOUNTS[0].email)
+  const [password, setPassword] = useState("demo-password")
   const [error, setError] = useState<string | null>(null)
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -220,25 +221,37 @@ export default function LoginPage() {
               <div className="h-px flex-1 bg-border" />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              {DEMO_ACCOUNTS.map((acct, i) => (
-                <motion.button
-                  key={acct.email}
-                  type="button"
-                  initial={{ scale: 0.85, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.5 + i * 0.1 }}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => {
-                    setEmail(acct.email)
-                    setError(null)
-                  }}
-                  className="rounded-xl border border-dashed px-4 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-primary/5"
-                >
-                  <div className="font-medium text-foreground">{acct.label}</div>
-                  <div className="text-xs text-muted-foreground">{acct.email}</div>
-                </motion.button>
-              ))}
+              {DEMO_ACCOUNTS.map((acct, i) => {
+                const selected = email === acct.email
+                return (
+                  <motion.button
+                    key={acct.email}
+                    type="button"
+                    initial={{ scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.5 + i * 0.1 }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => {
+                      setEmail(acct.email)
+                      setError(null)
+                    }}
+                    aria-pressed={selected}
+                    className={cn(
+                      "rounded-xl border px-4 py-3 text-left text-sm transition-colors",
+                      selected
+                        ? "border-primary bg-primary/5"
+                        : "border-dashed hover:border-primary hover:bg-primary/5"
+                    )}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <div className="font-medium text-foreground">{acct.label}</div>
+                      {selected && <Check className="size-3.5 text-primary" />}
+                    </div>
+                    <div className="text-xs text-muted-foreground">{acct.email}</div>
+                  </motion.button>
+                )
+              })}
             </div>
           </div>
         </div>

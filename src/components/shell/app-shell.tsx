@@ -30,7 +30,7 @@ export function AppShell() {
       <NavRail onOpenPalette={() => setPaletteOpen(true)} />
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
 
-      <main className="relative z-10 mx-auto max-w-[1600px] px-4 pt-8 pb-28 md:pt-10 md:pl-28 md:pr-8 md:pb-10">
+      <main className="relative z-10 mx-auto max-w-[1600px] px-4 pt-8 pb-28 md:px-8 md:pt-10 md:pb-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={sectionKey}
