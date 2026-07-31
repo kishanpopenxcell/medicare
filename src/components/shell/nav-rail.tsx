@@ -45,7 +45,7 @@ export function NavRail({ onOpenPalette }: { onOpenPalette: () => void }) {
     <>
       {/* Desktop: fixed horizontal dock, same position on every module */}
       <nav
-        className="fixed top-6 right-4 z-40 hidden items-center gap-1 rounded-full border border-border/60 bg-card/70 p-2 shadow-xl backdrop-blur-xl md:right-8 md:flex"
+        className="fixed top-6 right-4 z-40 hidden items-center gap-1 rounded-full border border-border/60 bg-card/70 p-2 shadow-xl backdrop-blur-xl lg:right-8 lg:flex"
         aria-label="Primary navigation"
       >
         <RailButton
@@ -110,7 +110,7 @@ export function NavRail({ onOpenPalette }: { onOpenPalette: () => void }) {
 
       {/* Mobile: floating bottom dock */}
       <nav
-        className="fixed inset-x-0 bottom-4 z-40 flex justify-center md:hidden"
+        className="fixed inset-x-0 bottom-4 z-40 flex justify-center lg:hidden"
         aria-label="Primary navigation"
       >
         <div className="flex items-center gap-1 rounded-full border border-border/60 bg-card/80 p-1.5 shadow-xl backdrop-blur-xl">

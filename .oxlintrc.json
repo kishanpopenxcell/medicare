@@ -3,6 +3,10 @@
   "plugins": ["react", "typescript", "oxc"],
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+    // Off by design: shadcn/ui co-locates each component with its `cva` variant
+    // export, and the context modules export their `use*` hook alongside the
+    // provider. Both are upstream convention; splitting them to satisfy this
+    // Fast Refresh hint would diverge from the generated shadcn layout.
+    "react/only-export-components": "off"
   }
 }
