@@ -12,6 +12,17 @@ dist
 dist-ssr
 *.local
 
+# Local template marketing assets & generation notes (not part of the app)
+template-assets
+asset-generation.md
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

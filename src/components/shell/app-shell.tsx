@@ -30,7 +30,10 @@ export function AppShell() {
       <NavRail onOpenPalette={() => setPaletteOpen(true)} />
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
 
-      <main className="relative z-10 mx-auto max-w-[1600px] px-4 pt-8 pb-28 md:px-8 md:pt-10 md:pb-10">
+      {/* pb-28 clears the floating bottom dock, which now persists up to lg.
+          pt-24 at lg clears the top dock until the viewport is wide enough
+          for it to sit beside the page title rather than on top of it. */}
+      <main className="relative z-10 mx-auto max-w-[1600px] px-4 pt-8 pb-28 md:px-8 md:pt-10 lg:pt-24 lg:pb-10 xl:pt-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={sectionKey}

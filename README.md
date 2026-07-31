@@ -2,7 +2,17 @@
 
 A healthcare client portal template where patients can view medical reports, prescriptions, appointments, invoices, and support requests. Staff can manage appointments, billing, and support tickets across patients.
 
-**Template project — all data is mock/dummy.** No real backend, no real auth, no real PHI. See [PRD.md](PRD.md) and [DESIGN_SPEC.md](DESIGN_SPEC.md) for full product and design specs.
+**Template project — all data is mock/dummy.** No real backend, no real auth, no real PHI.
+
+## Mock APIs & data
+
+This project runs entirely in the browser with **no backend of any kind**:
+
+- **No network calls.** There is no `fetch`, `axios`, or WebSocket usage anywhere in `src/`. Nothing is requested from a remote host at runtime.
+- **Static fixtures.** All content lives in `src/data/` as typed TypeScript arrays (patients, reports, prescriptions, appointments, invoices, tickets).
+- **Mock service layer.** `src/context/data-context.tsx` stands in for an API client. Mutations (book appointment, pay invoice, reply to ticket, request refill) update React state only — changes are lost on refresh and never persisted anywhere.
+- **Mock auth.** `src/context/auth-context.tsx` matches an email against `src/data/users.ts`. Any password is accepted; no token is ever issued, requested, or verified. Only a demo user id is written to `localStorage`.
+- **Placeholder data only.** All names, emails (`@demo.com`), and clinical details are fabricated sample data. No real credentials, endpoints, or PHI are present.
 
 ## Tech stack
 
